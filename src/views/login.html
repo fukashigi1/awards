@@ -9,14 +9,27 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
         <script type="text/javascript" src="js/login.js"></script>
+        <script type="text/javascript" src="js/utils/fnUtils.js"></script>
         <script type="text/javascript" src="js/utils/globalScript.js"></script>
 
         <link rel="stylesheet" href="css/globalStyle.css">
     </head>
     <body>
         <div class="contentWrapper">
-            <form>
-                Login
+            <form id="loginForm">
+                <div class="inputWrapper">
+                    <label for="usernameEmailInput">Username or email</label>
+                    <input type="text" id="usernameEmailInput" name="usernameEmailInput"> 
+                    <small></small>
+                </div>
+                <div class="inputWrapper">
+                    <label for="passwordInput">Password</label>
+                    <input type="password" id="passwordInput" name="passwordInput"> 
+                    <small></small>
+                </div>
+                <div>
+                    <button type="submit">Log in</button>
+                </div>
             </form>
         </div>
     </body>

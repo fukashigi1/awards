@@ -1,4 +1,22 @@
 import express from 'express'
+import mysql from 'mysql2/promise'
+import dotenv from 'dotenv';
+dotenv.config({ path: 'config.env' });
+
+const config = {
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    port: process.env.DB_PORT,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME
+}
+export let connection;
+try {
+    connection = await mysql.createConnection(config)
+} catch (e) {
+    console.log(e)
+}
+
 const app = express()
 
 app.disable('x-powered-by')

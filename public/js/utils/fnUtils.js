@@ -99,6 +99,15 @@ function validateEmail(email) {
     return regexEmail.test(email);
 }
 
+function setError(element, message, type = true) {
+    element.nextElementSibling.textContent = message;
+    if (type) { // true for set the error and false to remove it
+        // add red border
+    } else {
+        // remove red border
+    }
+}
+
 /*dynamicEvent('click', 'ccCancelButton', ()=>{
     while (document.getElementsByClassName('modalBackground')[0]){
         document.getElementsByClassName('modalBackground')[0].remove();

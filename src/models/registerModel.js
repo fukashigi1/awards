@@ -1,19 +1,9 @@
-import mysql from 'mysql2/promise'
-import dotenv from 'dotenv';
 import {validateEmail} from '../utils/fnUtilsBE.js'
-dotenv.config({ path: 'config.env' });
-
-const config = {
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    port: process.env.DB_PORT,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME
-}
-
-const connection = await mysql.createConnection(config)
+import {connection} from '../server.js'
+import bcrypt from 'bcrypt'
 
 export class registerModel {
+    
     static register = async ({userData}) => {
         let {usernameInput, emailInput, emailConfirmInput, passwordInput, passwordConfirmInput} = userData
         let errors = []
@@ -22,6 +12,8 @@ export class registerModel {
         } else {
             if (usernameInput.trim() === '') {
                 errors.push({msg: 'Username field cannot be empty.', element: 'usernameInput'})
+            } else if (validateEmail(usernameInput.trim())) {
+                errors.push({msg: 'Username cannot be an email.', element: 'usernameInput'})
             } else {
                 try {
                     let [usernameExist] = await connection.query('SELECT username FROM users WHERE username = ?', [usernameInput.trim()])
@@ -51,10 +43,10 @@ export class registerModel {
                     return {status: 500, msg: 'An internal error has ocurred.'}
                 }
             }
-            if (passwordInput.trim() === '') {
+            if (passwordInput === '') {
                 errors.push({msg: 'Password field cannot be empty.', element: 'passwordInput'})
             }
-            if (passwordConfirmInput.trim() === '') {
+            if (passwordConfirmInput === '') {
                 errors.push({msg: 'Password confirm input cannot be empty.', element: 'passwordConfirmInput'})
             } else if (passwordInput !== passwordConfirmInput) {
                 errors.push({msg: 'The passwords entered are not the same.', element: 'passwordConfirmInput'})
@@ -65,7 +57,8 @@ export class registerModel {
             return {status: 400, msg: errors}
         } else {
             try {
-                let [registerResult] = await connection.query('INSERT INTO users (username, email, pass) VALUES (?, ?, ?)', [usernameInput.trim(), emailConfirmInput.trim(), passwordConfirmInput.trim()])
+                const hashedPassword = await bcrypt.hash(passwordConfirmInput, 10)
+                let [registerResult] = await connection.query('INSERT INTO users (username, email, pass) VALUES (?, ?, ?)', [usernameInput.trim(), emailConfirmInput.trim().toLowerCase(), hashedPassword])
                 if (registerResult.affectedRows > 0) {
                     return {status: 201, msg: 'User registered succesfully.'}
                 } else {

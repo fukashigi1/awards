@@ -6,16 +6,8 @@ function ready(fn) {
     }
 }
 
-function setError(element, message, type = true) {
-    element.nextElementSibling.textContent = message;
-    if (type) { // true for set the error and false to remove it
-        // add red border
-    } else {
-        // remove red border
-    }
-}
-
 ready(()=>{
+    executeModal('error', "e", 'continueCancel')
     let registerForm = document.getElementById('registerForm')
     registerForm.addEventListener("submit", async (e) => {
         e.preventDefault()
@@ -30,7 +22,11 @@ ready(()=>{
         if (usernameInput.value.trim() === '') {
             setError(usernameInput, "Username field cannot be empty.")
             usernameError = true
-        } else {
+        } else if (validateEmail(usernameInput.value.trim())) {
+            setError(usernameInput, "Username cannot be an email.")
+            usernameError = true
+        } 
+        else {
             setError(usernameInput, "", false)
             usernameError = false
         }
@@ -54,17 +50,17 @@ ready(()=>{
             setError(emailConfirmInput, "", false)
             emailConfirmError = false
         }
-        if (passwordInput.value.trim() === '') {
+        if (passwordInput.value === '') {
             setError(passwordInput, "Password field cannot be empty.")
             passwordError = true
         } else {
             setError(passwordInput, "", false)
             passwordError = false
         }
-        if (passwordConfirmInput.value.trim() === '') {
+        if (passwordConfirmInput.value === '') {
             setError(passwordConfirmInput, "Password confirmation field cannot be empty.")
             passwordConfirmError = true
-        } else if (passwordInput.value.trim() !== passwordConfirmInput.value.trim()) {
+        } else if (passwordInput.value !== passwordConfirmInput.value) {
             setError(passwordConfirmInput, "The passwords entered are not the same.")
             passwordConfirmError = true
         } else {
@@ -82,8 +78,8 @@ ready(()=>{
                         usernameInput: usernameInput.value.trim(),
                         emailInput: emailInput.value.trim(),
                         emailConfirmInput: emailConfirmInput.value.trim(),
-                        passwordInput: passwordInput.value.trim(),
-                        passwordConfirmInput: passwordConfirmInput.value.trim()
+                        passwordInput: passwordInput.value,
+                        passwordConfirmInput: passwordConfirmInput.value
                     })
                 })
                 if (response.status === 500) {
