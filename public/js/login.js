@@ -33,7 +33,7 @@ ready(() => {
         }
 
         if(!usernameEmailError && !passwordError) {
-            // fetch
+            // fetch y hacer logout
         }
         
     })

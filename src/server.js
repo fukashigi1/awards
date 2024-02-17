@@ -1,6 +1,7 @@
 import express from 'express'
 import mysql from 'mysql2/promise'
 import dotenv from 'dotenv';
+
 dotenv.config({ path: 'config.env' });
 
 const config = {
@@ -11,11 +12,13 @@ const config = {
     database: process.env.DB_NAME
 }
 export let connection;
+
 try {
     connection = await mysql.createConnection(config)
 } catch (e) {
     console.log(e)
 }
+
 
 const app = express()
 
@@ -37,10 +40,18 @@ app.use(express.static('public'));
 import {mainRouter} from './routes/mainRouter.js'
 import {registerRouter} from './routes/registerRouter.js'
 import { loginRouter } from './routes/loginRouter.js'
-
+import {validateSession} from './utils/fnUtilsBE.js'
 //RUTAS
 app.get('/', (req, res) => { // INDEX
-    res.status(200).sendFile(`${process.cwd()}/src/views/index.html`)
+
+    validateSession(req.headers.cookie).then((val) => {
+        if (!val) {
+            return res.status(401).redirect('/login')
+        } else {
+            return res.status(200).sendFile(`${process.cwd()}/src/views/index.html`)
+        }
+    })
+
 })
 
 app.use('/main', mainRouter) // MAIN
