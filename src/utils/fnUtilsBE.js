@@ -25,17 +25,11 @@ export async function validateSession(cookie) {
         return null;
     }
     
-    let cookieSessionId;
-    if (Array.isArray(cookie)) {
-        cookie.split('; ')
-        cookieSessionId = obtainValueOfKey(cookie, 'session');
-        console.log(cookieSessionId)
-    } else {
-        if (cookie.split('=')[0] === 'session'){
-            cookieSessionId = cookie.split('=')[1]
-        }
-
-    }
+    
+    const cookieArray = cookie.replace('; ', '=').split('=')
+    const indexCookie = cookieArray.indexOf('sesssion')
+    const cookieSessionId = cookieArray[indexCookie + 1]
+    
     
     if (cookieSessionId) {
         try {

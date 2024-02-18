@@ -36,7 +36,7 @@ export class loginModel {
                 console.log(existSession)
                 if (existSession.length > 0) {
                     return {
-                        status: 204,
+                        status: 200,
                         content: [{msg: "User is already loged in."}] // GENERAR TOKENS O COOKIES, INVESTIGAR
                     };
                 } else {
@@ -61,4 +61,45 @@ export class loginModel {
             };
         }
     };
+
+    static logout = async ({cookie}) => {
+        if (cookie) {
+            const cookieArray = cookie.replace('; ', '=').split('=')
+            const indexCookie = cookieArray.indexOf('session')
+            if (indexCookie !== -1) {
+                const userSessionCookie = cookieArray[indexCookie + 1]
+                console.log(cookieArray, indexCookie, userSessionCookie)
+
+                try {
+                    const [selectSessionId] = await connection.query('SELECT session_id FROM sessions WHERE session_id = UUID_TO_BIN(?)', [userSessionCookie])
+
+                    if (selectSessionId.length > 0) {
+                        const [deleteSessionId] = await connection.query('DELETE FROM sessions WHERE session_id = UUID_TO_BIN(?)', [userSessionCookie])
+                        
+                        return {
+                            status: 200
+                        }
+
+                    } else {
+                        return {
+                            status: 401
+                        }
+                    }
+                } catch (e) {
+                    return {
+                        status: 500
+                    }
+                }
+
+            } else {
+                return {
+                    status: 401
+                }
+            }
+        } else {
+            return  {
+                status: 401
+            }
+        }
+    }
 }
