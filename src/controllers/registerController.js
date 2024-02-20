@@ -1,9 +1,16 @@
 import { registerModel } from "../models/registerModel.js";
+import {validateSession} from '../utils/fnUtilsBE.js'
 
 export class registerController {
     static async view(req, res) {
-        console.log("view")
-        res.status(200).sendFile(`${process.cwd()}/src/views/register.html`)
+        
+        validateSession(req.headers.cookie).then((val) => {
+            if (!val) {
+                res.status(200).sendFile(`${process.cwd()}/src/views/register.html`)
+            } else {
+                res.status(401).redirect(308, '/main')
+            }
+        })
     }
 
     static async register(req, res) {

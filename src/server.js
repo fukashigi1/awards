@@ -1,6 +1,7 @@
 import express from 'express'
 import mysql from 'mysql2/promise'
 import dotenv from 'dotenv';
+import {validateSession} from './utils/fnUtilsBE.js'
 
 dotenv.config({ path: 'config.env' });
 
@@ -28,8 +29,19 @@ const PORT = process.env.PORT ?? 5555
 
 //Middlewares
 app.use((req, res, next) => {
+    // validation here
     next()
 })
+
+var validationWare = function(req, res, next) {
+    validateSession(req.headers.cookie).then((val) => {
+        if (!val) {
+            res.status(401).redirect(308, '/login')
+        } 
+    })
+    next();
+};
+
 app.use(express.urlencoded({ extended: false }));
 
 app.use(express.json())
@@ -40,21 +52,13 @@ app.use(express.static('public'));
 import {mainRouter} from './routes/mainRouter.js'
 import {registerRouter} from './routes/registerRouter.js'
 import { loginRouter } from './routes/loginRouter.js'
-import {validateSession} from './utils/fnUtilsBE.js'
 //RUTAS
 app.get('/', (req, res) => { // INDEX
     return res.status(200).sendFile(`${process.cwd()}/src/views/index.html`)
-    /*validateSession(req.headers.cookie).then((val) => {
-        if (!val) {
-            return res.status(401).redirect('/login')
-        } else {
-            return res.status(200).sendFile(`${process.cwd()}/src/views/index.html`)
-        }
-    })*/
 
 })
 
-app.use('/main', mainRouter) // MAIN
+app.use('/main', validationWare, mainRouter) // MAIN
 app.use('/register', registerRouter) // REGISTER
 app.use('/login', loginRouter) // LOGIN
 

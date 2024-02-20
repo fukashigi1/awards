@@ -1,8 +1,15 @@
 import { loginModel } from "../models/loginModel.js";
+import {validateSession} from '../utils/fnUtilsBE.js'
 
 export class loginController {
     static async view(req, res) {
-        res.status(200).sendFile(`${process.cwd()}/src/views/login.html`)
+        validateSession(req.headers.cookie).then((val) => {
+            if (!val) {
+                res.status(200).sendFile(`${process.cwd()}/src/views/login.html`)
+            } else {
+                res.status(401).redirect(308, '/main')
+            }
+        })
     }
 
     static async login(req, res) {

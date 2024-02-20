@@ -73,6 +73,7 @@ ready(() => {
                 }
 
                 if (response.status === 200) window.location.href = '/main'
+                // agregar boton log out global y validar la sesion co n un middleware?
                 
             } catch (e) {
                 console.error('An unexpected error has ocurred during fetch.')

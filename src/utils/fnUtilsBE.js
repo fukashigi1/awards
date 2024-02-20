@@ -25,27 +25,27 @@ export async function validateSession(cookie) {
         return null;
     }
     
+    if (cookie !== undefined) {
+        const cookieArray = cookie.replace('; ', '=').split('=')
+        const indexCookie = cookieArray.indexOf('session')
+        const cookieSessionId = cookieArray[indexCookie + 1]
+        if (cookieSessionId) {
+            try {
+                const [selectSessionId] = await connection.query('SELECT BIN_TO_UUID(session_id) as session_id FROM sessions WHERE session_id = UUID_TO_BIN(?)', [cookieSessionId])
+                if (selectSessionId.length > 0) {
+                    return true
+                } else {
+                    return false
+                }
     
-    const cookieArray = cookie.replace('; ', '=').split('=')
-    const indexCookie = cookieArray.indexOf('sesssion')
-    const cookieSessionId = cookieArray[indexCookie + 1]
-    
-    
-    if (cookieSessionId) {
-        try {
-            const [selectSessionId] = await connection.query('SELECT BIN_TO_UUID(session_id) as session_id FROM sessions WHERE session_id = UUID_TO_BIN(?)', [cookieSessionId])
-            
-            if (selectSessionId.length > 0) {
-                return true
-            } else {
+            } catch (e) {
                 return false
-            }
-
-        } catch (e) {
+            }     
+    
+        }else {
             return false
-        }     
-
-    }else {
+        }
+    } else {
         return false
     }
 }
