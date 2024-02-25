@@ -36,10 +36,15 @@ app.use((req, res, next) => {
 var validationWare = function(req, res, next) {
     validateSession(req.headers.cookie).then((val) => {
         if (!val) {
-            res.status(401).redirect(308, '/login')
-        } 
+            if (req.method === 'GET'){
+                return res.status(401).redirect(308, '/login')
+            } else {
+                return res.status(401).send('You are not authorized.')
+            }
+        } else {
+            next()
+        }
     })
-    next();
 };
 
 app.use(express.urlencoded({ extended: false }));
@@ -49,18 +54,18 @@ app.use(express.json())
 app.use(express.static('public'));
 
 //IMPORT RUTAS
-import {mainRouter} from './routes/mainRouter.js'
-import {registerRouter} from './routes/registerRouter.js'
+import { registerRouter } from './routes/registerRouter.js'
 import { loginRouter } from './routes/loginRouter.js'
+import { awardsRouter } from './routes/awardsRouter.js'
 //RUTAS
 app.get('/', (req, res) => { // INDEX
     return res.status(200).sendFile(`${process.cwd()}/src/views/index.html`)
 
 })
 
-app.use('/main', validationWare, mainRouter) // MAIN
 app.use('/register', registerRouter) // REGISTER
 app.use('/login', loginRouter) // LOGIN
+app.use('/awards', validationWare, awardsRouter) // AWARDS MENU
 
 app.use((req, res) => {
     res.status(404).send('<h1>404</h1>')

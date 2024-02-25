@@ -5,10 +5,13 @@ import { v4 as uuidv4 } from 'uuid';
 
 
 export class loginModel {
-    static login = async ({userData}) => {
+    static login = async ({userData, cookie}) => {
+        // const [deleteCookie] = await connection.query('DELETE FROM session WHERE session_id = UUID_TO_BIN(?)', cookie)
+        
+
         const {usernameEmailInput, passwordInput} = userData;
         const trimmedInput = usernameEmailInput.trim();
-    
+
         if (!trimmedInput || !passwordInput) {
             return {
                 status: 400,
@@ -33,18 +36,37 @@ export class loginModel {
     
             if (isPasswordCorrect) {
                 const [existSession] = await connection.query('SELECT session_id FROM sessions WHERE email = ?', selectResult[0].email)
-                console.log(existSession)
+                
                 if (existSession.length > 0) {
                     return {
                         status: 200,
-                        content: [{msg: "User is already loged in."}] // GENERAR TOKENS O COOKIES, INVESTIGAR
+                        content: [{msg: "User is already loged in."}] 
                     };
                 } else {
                     const sessionId = uuidv4()
                     const [insertSession] = await connection.query('INSERT INTO sessions (session_id, email, user_id) VALUES(UUID_TO_BIN(?), ?, ?)', [sessionId, selectResult[0].email, selectResult[0].id])
+
+                    if (cookie) {
+                        try {
+                            //const [obtainUserId] = await connection.query('SELECT BIN_TO_UUID(id) as id FROM users WHERE email = ?', [trimmedInput])
+                            //const [deleteCookie] = await connection.query('DELETE FROM session WHERE session_id = UUID_TO_BIN(?)', cookie)
+                            const [obtainUserIdFromSession] = await connection.query('SELECT user_id FROM sessions WHERE session_id = UUID_TO_BIN(?)', [cookie])
+                            
+                            if (obtainUserIdFromSession[0].user_id != selectResult[0].id) {
+                                const [deleteCookie] = await connection.query('DELETE FROM sessions WHERE session_id = UUID_TO_BIN(?)', cookie)
+                                
+                            }
+                        } catch (e){
+                            return {
+                                status: 500,
+                                content: [{msg: 'An internal server error has occurred.'}]
+                            };
+                        }
+                    }
+
                     return {
                         status: 200,
-                        content: [{msg: "User loged in succesfully.", sessionId: sessionId}] // GENERAR TOKENS O COOKIES, INVESTIGAR
+                        content: [{msg: "User loged in succesfully.", sessionId: sessionId}] 
                     };
                 }
                 
