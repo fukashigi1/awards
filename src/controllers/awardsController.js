@@ -33,10 +33,10 @@ export class awardsController {
     }
     
     static async updateAward(req, res) {
-        const {award_name, award_id} = req.body
+        const {award_name, award_id, new_award_name} = req.body
         const cookieSessionId = obtainSessionId(req.headers.cookie)
 
-        const updateAward = await awardsModel.updateAward({awardData: {award_name, award_id, cookieSessionId}})
+        const updateAward = await awardsModel.updateAward({awardData: {award_name, award_id, new_award_name, cookieSessionId}})
         res.status(updateAward.status).json(updateAward.content)
     }
 }
