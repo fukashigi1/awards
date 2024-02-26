@@ -99,7 +99,7 @@ export class loginModel {
                         const [deleteSessionId] = await connection.query('DELETE FROM sessions WHERE session_id = UUID_TO_BIN(?)', [userSessionCookie])
                         
                         return {
-                            status: 200
+                            status: 204
                         }
 
                     } else {

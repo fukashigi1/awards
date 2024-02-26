@@ -30,7 +30,7 @@ export class loginController {
         const login = await loginModel.logout({cookie: req.headers.cookie})
         try {
             console.log(login.status)
-            res.status(login.status).clearCookie('session').send()
+            res.status(login.status).clearCookie('session').redirect(303, '/')
         } catch (e) {
             console.log(e)
         }

@@ -2,6 +2,7 @@ import { awardsModel } from "../models/awardsModel.js"
 import { obtainSessionId } from '../utils/fnUtilsBE.js'
 
 export class awardsController {
+    
     static async view(req, res) {
         res.status(200).sendFile(`${process.cwd()}/src/views/awards.html`)
     }
@@ -23,10 +24,19 @@ export class awardsController {
     }
 
     static async removeAward(req, res) {
-        res.send("hello")
+        const {award_name, award_id} = req.body
+        const cookieSessionId = obtainSessionId(req.headers.cookie)
+
+        const removeAward = await awardsModel.removeAward({awardData: {award_name, award_id, cookieSessionId}})
+        res.status(removeAward.status).json(removeAward.content)
+
     }
     
     static async updateAward(req, res) {
-        res.send("hello")
+        const {award_name, award_id} = req.body
+        const cookieSessionId = obtainSessionId(req.headers.cookie)
+
+        const updateAward = await awardsModel.updateAward({awardData: {award_name, award_id, cookieSessionId}})
+        res.status(updateAward.status).json(updateAward.content)
     }
 }
