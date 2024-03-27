@@ -24,9 +24,9 @@ export class editorController {
     }
 
     static async saveQuestions (req, res) {
-        const {award_id, award_name, questions} = req.body
+        const {award_id, award_name, questions, deleted_questions} = req.body
         const session_id = obtainSessionId(req.headers.cookie)
-        const saveQuestionsAward = await editorModel.saveQuestions({awardData: {award_id, award_name, questions, session_id}})
+        const saveQuestionsAward = await editorModel.saveQuestions({awardData: {award_id, award_name, questions, deleted_questions, session_id}})
 
         res.status(saveQuestionsAward.status).json(saveQuestionsAward.content)
 

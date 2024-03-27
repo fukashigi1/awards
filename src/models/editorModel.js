@@ -47,7 +47,7 @@ export class editorModel {
                 try {
                     const [selectAward] = await connection.query('SELECT id FROM awards WHERE owner = UUID_TO_BIN(?) AND id = ? AND award_name = ?', [owner_id[0].user_id, award_id, award_name])
                     if (selectAward.length > 0) {
-                        const [selectQuestions] = await connection.query('SELECT BIN_TO_UUID(id) as id, question, question_type FROM questions WHERE id_award = ? ORDER BY order_id', [selectAward[0].id])
+                        const [selectQuestions] = await connection.query('SELECT BIN_TO_UUID(id) as id, question, question_type, url FROM questions WHERE id_award = ? ORDER BY order_id', [selectAward[0].id])
 
                         return {
                             status: 200,
@@ -81,7 +81,7 @@ export class editorModel {
     }
 
     static saveQuestions = async ({awardData}) => {
-        const {award_id, award_name, questions, session_id} = awardData
+        const {award_id, award_name, questions, deleted_questions = 0, session_id} = awardData
         
         if (questions.length == 0) {
             return {
@@ -98,14 +98,46 @@ export class editorModel {
                 const [selectAward] = await connection.query('SELECT id FROM awards WHERE owner = UUID_TO_BIN(?) AND id = ? AND award_name = ?', [owner_id[0].user_id, award_id, award_name])
                 if (selectAward.length > 0) {
                     
-                    const [selectQuestions] = await connection.query('SELECT BIN_TO_UUID(id) as id, question, question_type FROM questions WHERE id_award = ? ORDER BY order_id' , [award_id])
+                    const [selectQuestions] = await connection.query('SELECT BIN_TO_UUID(id) as id, question, question_type, url FROM questions WHERE id_award = ? ORDER BY order_id' , [award_id])
+
+                    if (deleted_questions.length > 0) { // Check if there are questions to be removed
+                        for (let i in deleted_questions) {
+                            await connection.query('DELETE FROM questions WHERE id = UUID_TO_BIN(?) AND id_award = ?', [deleted_questions[i].id, award_id])
+                        }
+                        if (questions.length == 0 ) {
+                            return {
+                                status: 200,
+                                content: [{msg: 'The questions were deleted succesfully.'}]
+                            }
+                        }
+                    }
 
                     if (selectQuestions.length > 0) { // En caso de que haya questions
                         let questionInputId, questionDbId
-
                         for (let i in questions) {
                             let changed = false
                             questionInputId = questions[i]
+                            if (!validateUrl(questionInputId.url)){
+                                return {
+                                    status: 400,
+                                    content: [{msg: 'The url provided is not valid.'}]
+                                }
+                            }
+
+                            function validateUrl(url){
+                                let ytRegex = /^((?:https?:)?\/\/)?((?:www|m)\.)?((?:youtube(-nocookie)?\.com|youtu\.be))(\/(?:[\w\-]+\?v=|embed\/|live\/|v\/)?)([\w\-]+)(\S+)?$/
+                                let imageRegex = /^(http(s)?:\/\/)?([\w-]+\.)+[\w-]+(\/[\w- ;,./?%&=]*)?\.(jpg|jpeg|png|gif|svg)$/
+
+                                if (ytRegex.test(url)) {
+                                    return true;
+                                } else if (imageRegex.test(url)) {
+                                    return true;
+                                } else {
+                                    return false;
+                                }
+                            }
+
+
                             if (questionInputId.question === undefined || questionInputId.question_type === undefined || questionInputId.order_id === undefined){
                                 return {
                                     status: 400,
@@ -115,18 +147,16 @@ export class editorModel {
 
                             for (let x in selectQuestions) {
                                 questionDbId = selectQuestions[x]
-                                console.log(questionInputId.id, questionDbId.id)
                                 if (questionInputId.id === questionDbId.id) {
-                                    const [replaceQuestion] = await connection.query('UPDATE questions SET question = ?, question_type = ?, order_id = ? WHERE id = UUID_TO_BIN(?)', [questionInputId.question, questionInputId.question_type, questionInputId.order_id, questionInputId.id])
-                                    console.log("update")   
+                                    console.log(questionInputId.question, questionInputId.question_type, questionInputId.order_id, questionInputId.id, questionInputId.url)
+                                    await connection.query('UPDATE questions SET question = ?, question_type = ?, order_id = ?, url = ? WHERE id = UUID_TO_BIN(?)', [questionInputId.question, questionInputId.question_type, questionInputId.order_id, questionInputId.url, questionInputId.id])
                                     changed = true
                                     break
                                 } 
                             }
 
                             if (!changed) {
-                                console.log("aca", changed)
-                                const [addQuestion] = await connection.query('INSERT INTO questions (id_award, question, question_type, order_id) VALUES (?, ?, ?, ?)', [award_id, questionInputId.question, questionInputId.question_type, questionInputId.order_id])
+                                await connection.query('INSERT INTO questions (id_award, question, question_type, order_id, url) VALUES (?, ?, ?, ?, ?)', [award_id, questionInputId.question, questionInputId.question_type, questionInputId.order_id, questionInputId.url])
                             }
                         }
 
@@ -135,7 +165,7 @@ export class editorModel {
 
                         for (let i in questions) {
                             question = questions[i]
-                            const [addQuestion] = await connection.query('INSERT INTO questions (id_award, question, question_type, order_id) VALUES (?, ?, ?, ?)', [award_id, question.question, question.question_type, question.order_id])
+                            await connection.query('INSERT INTO questions (id_award, question, question_type, order_id, url) VALUES (?, ?, ?, ?, ?)', [award_id, question.question, question.question_type, question.order_id, question.url])
                         }
 
                     }
