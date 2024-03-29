@@ -58,6 +58,7 @@ import { registerRouter } from './routes/registerRouter.js'
 import { loginRouter } from './routes/loginRouter.js'
 import { awardsRouter } from './routes/awardsRouter.js'
 import { editorRouter } from './routes/editorRouter.js'
+import { voteRouter } from './routes/voteRouter.js'
 //RUTAS
 app.get('/', (req, res) => { // INDEX
     return res.status(200).sendFile(`${process.cwd()}/src/views/index.html`)
@@ -68,6 +69,7 @@ app.use('/register', registerRouter) // REGISTER
 app.use('/login', loginRouter) // LOGIN
 app.use('/awards', validationWare, awardsRouter) // AWARDS MENU
 app.use('/awards/editor', validationWare, editorRouter) // EDITOR
+app.use('/vote', voteRouter) // EDITOR
 
 app.use((req, res) => {
     res.status(404).send('<h1>404</h1>')

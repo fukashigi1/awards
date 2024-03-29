@@ -46,10 +46,31 @@ export class awardsModel {
             if (owner_id.length > 0){
                 
                 try {
-                    const [insertAward] = await connection.query('INSERT INTO awards (award_name, owner) VALUES(?, UUID_TO_BIN(?))', [award_name, owner_id[0].user_id])
+                    let hash = generateHash(36)
+
+
+                    await connection.query('INSERT INTO awards (award_name, owner, hash) VALUES(?, UUID_TO_BIN(?), ?)', [award_name, owner_id[0].user_id, hash])
+
+                    function generateHash(length) {
+                        let result = '';
+                        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+                        const charactersLength = characters.length;
+                        let counter = 0;
+                        while (counter < length) {
+                          result += characters.charAt(Math.floor(Math.random() * charactersLength));
+                          counter += 1;
+                        }
+                        return result;
+                    }
+
+                    const baseUrl = process.env.BASE_URL || 'http://localhost:5555/';
+
                     return {
-                        status: 201,
-                        content: [{msg: 'Resource created succesfully.'}]
+                        status: 200,
+                        content: { 
+                            msg: 'Resource created succesfully.', 
+                            url: baseUrl + 'vote/' + hash
+                        }
                     }
                 } catch (e) {
                     console.log(e)
@@ -121,9 +142,12 @@ export class awardsModel {
     }
 
     static updateAward = async ({awardData}) => {
-        const {award_name, award_id, new_award_name, cookieSessionId} = awardData
-        const trimedNewName = new_award_name.trim()
-        if (trimedNewName === undefined || trimedNewName === '' || trimedNewName === null) {
+        const {award_name, award_id, new_award_name, cookieSessionId, is_public} = awardData
+        let trimedNewName
+        if (new_award_name !== undefined){
+            trimedNewName = new_award_name.trim()
+        }
+        if (trimedNewName === '') {
             return {
                 status: 400,
                 content: [{msg: 'The new name entered is not valid.'}]
@@ -146,8 +170,17 @@ export class awardsModel {
                         content: [{msg: 'The resource selected does not exists.'}]
                     }
                 } else if (awardExists[0].owner === owner_id[0].user_id) {
-                    
-                    const [updateAward] = await connection.query('UPDATE awards SET award_name = ? WHERE id = ? AND award_name = ? AND owner = UUID_TO_BIN(?)', [new_award_name, award_id, award_name, awardExists[0].owner])
+                    let is_public_notconst
+                    if (is_public === undefined || is_public === null) {
+                        is_public_notconst = 0
+                    } else if (is_public >= 1) {
+                        is_public_notconst = 1
+                    } else {
+                        is_public_notconst = 0
+                    }
+                    let name = (trimedNewName === '' || trimedNewName === undefined) ? award_name : trimedNewName
+
+                    const [updateAward] = await connection.query('UPDATE awards SET award_name = ?, public = ? WHERE id = ? AND award_name = ? AND owner = UUID_TO_BIN(?)', [name, is_public_notconst, award_id, award_name, awardExists[0].owner])
                     if (updateAward.affectedRows > 0) {
                         return {
                             status: 204
@@ -173,7 +206,7 @@ export class awardsModel {
         } catch(e) {
             return {
                 status: 500,
-                content: [{msg: 'An unexpected internal server error has occurred while trying to delete a resource.'}]
+                content: [{msg: 'An unexpected internal server error has occurred while trying to update a resource.'}]
             }
         }
     }

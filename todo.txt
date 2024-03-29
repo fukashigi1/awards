@@ -1,3 +1,13 @@
-terminé de añadir urls y validarlas
+crear tabla de respuestas
 
-no se que mas hacer, tu puedes fuka del futuro ingeniatela
+crear ruta para enviar las respuestas y guardarlas en la base de datos
+
+validar que el mismo usuario no pueda votar multiples veces.
+
+-podria ser por ip
+
+-podria ser por correo
+
+
+
+ver posibilidad de implementar inicio de sesion congoogle
