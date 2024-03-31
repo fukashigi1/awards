@@ -47,7 +47,7 @@ export class editorModel {
                 try {
                     const [selectAward] = await connection.query('SELECT id FROM awards WHERE owner = UUID_TO_BIN(?) AND id = ? AND award_name = ?', [owner_id[0].user_id, award_id, award_name])
                     if (selectAward.length > 0) {
-                        const [selectQuestions] = await connection.query('SELECT BIN_TO_UUID(id) as id, question, question_type, url FROM questions WHERE id_award = ? ORDER BY order_id', [selectAward[0].id])
+                        const [selectQuestions] = await connection.query('SELECT BIN_TO_UUID(id) as id, question, question_type, url, mandatory FROM questions WHERE id_award = ? ORDER BY order_id', [selectAward[0].id])
 
                         return {
                             status: 200,
@@ -98,7 +98,7 @@ export class editorModel {
                 const [selectAward] = await connection.query('SELECT id FROM awards WHERE owner = UUID_TO_BIN(?) AND id = ? AND award_name = ?', [owner_id[0].user_id, award_id, award_name])
                 if (selectAward.length > 0) {
                     
-                    const [selectQuestions] = await connection.query('SELECT BIN_TO_UUID(id) as id, question, question_type, url FROM questions WHERE id_award = ? ORDER BY order_id' , [award_id])
+                    const [selectQuestions] = await connection.query('SELECT BIN_TO_UUID(id) as id, question, question_type, url, mandatory FROM questions WHERE id_award = ? ORDER BY order_id' , [award_id])
 
                     if (deleted_questions.length > 0) { // Check if there are questions to be removed
                         for (let i in deleted_questions) {
@@ -117,13 +117,16 @@ export class editorModel {
                         for (let i in questions) {
                             let changed = false
                             questionInputId = questions[i]
-                            if (!validateUrl(questionInputId.url)){
-                                return {
-                                    status: 400,
-                                    content: [{msg: 'The url provided is not valid.'}]
+                            if (questionInputId.url !== undefined) {
+                                if (!validateUrl(questionInputId.url)){
+                                    return {
+                                        status: 400,
+                                        content: [{msg: 'The url provided is not valid.'}]
+                                    }
                                 }
+    
                             }
-
+                            
                             function validateUrl(url){
                                 let ytRegex = /^((?:https?:)?\/\/)?((?:www|m)\.)?((?:youtube(-nocookie)?\.com|youtu\.be))(\/(?:[\w\-]+\?v=|embed\/|live\/|v\/)?)([\w\-]+)(\S+)?$/
                                 let imageRegex = /^(http(s)?:\/\/)?([\w-]+\.)+[\w-]+(\/[\w- ;,./?%&=]*)?\.(jpg|jpeg|png|gif|svg)$/
@@ -144,19 +147,25 @@ export class editorModel {
                                     content: [{msg: 'Invalid data. Please verify your input.'}]
                                 }
                             }
+                            if (questionInputId.mandatory === undefined || questionInputId.mandatory > 1) {
+                                questionInputId.mandatory = 1
+                            } else if (questionInputId.mandatory < 0) {
+                                questionInputId.mandatory = 0
+                            }
+                            
 
                             for (let x in selectQuestions) {
                                 questionDbId = selectQuestions[x]
                                 if (questionInputId.id === questionDbId.id) {
-                                    console.log(questionInputId.question, questionInputId.question_type, questionInputId.order_id, questionInputId.id, questionInputId.url)
-                                    await connection.query('UPDATE questions SET question = ?, question_type = ?, order_id = ?, url = ? WHERE id = UUID_TO_BIN(?)', [questionInputId.question, questionInputId.question_type, questionInputId.order_id, questionInputId.url, questionInputId.id])
+                                    await connection.query('UPDATE questions SET question = ?, question_type = ?, order_id = ?, url = ?, mandatory = ? WHERE id = UUID_TO_BIN(?)', [questionInputId.question, questionInputId.question_type, questionInputId.order_id, questionInputId.url, questionInputId.mandatory, questionInputId.id])
                                     changed = true
                                     break
                                 } 
                             }
 
                             if (!changed) {
-                                await connection.query('INSERT INTO questions (id_award, question, question_type, order_id, url) VALUES (?, ?, ?, ?, ?)', [award_id, questionInputId.question, questionInputId.question_type, questionInputId.order_id, questionInputId.url])
+                                console.log ("ohola");
+                                await connection.query('INSERT INTO questions (id_award, question, question_type, order_id, url, mandatory) VALUES (?, ?, ?, ?, ?, ?)', [award_id, questionInputId.question, questionInputId.question_type, questionInputId.order_id, questionInputId.url, questionInputId.mandatory])
                             }
                         }
 
@@ -165,7 +174,7 @@ export class editorModel {
 
                         for (let i in questions) {
                             question = questions[i]
-                            await connection.query('INSERT INTO questions (id_award, question, question_type, order_id, url) VALUES (?, ?, ?, ?, ?)', [award_id, question.question, question.question_type, question.order_id, question.url])
+                            await connection.query('INSERT INTO questions (id_award, question, question_type, order_id, url, mandatory) VALUES (?, ?, ?, ?, ?)', [award_id, question.question, question.question_type, question.order_id, question.url, question.mandatory])
                         }
 
                     }

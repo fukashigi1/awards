@@ -23,4 +23,10 @@ export class voteController {
         res.status(bringQuestions.status).json(bringQuestions.content)
 
     }
+    static async sendResponses (req, res) {
+        let {responses, email, id_award} = req.body
+
+        const sendAllResponses = await voteModel.sendResponses({responses, email, id_award})
+        
+    }
 }

@@ -39,3 +39,9 @@ export function obtainSessionId(cookie) {
     const cookieSessionId = cookieArray[indexCookie + 1]
     return cookieSessionId
 }
+
+export async function  obtainQuestionTypes() {
+    const [bringQuestionTypes] = await connection.query('SELECT COUNT(*) AS questions_types FROM questions_types');
+    let questionQuantity = bringQuestionTypes[0].questions_types
+    return questionQuantity
+}

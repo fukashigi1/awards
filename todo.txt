@@ -4,7 +4,7 @@ crear ruta para enviar las respuestas y guardarlas en la base de datos
 
 validar que el mismo usuario no pueda votar multiples veces.
 
--podria ser por ip
+-podria ser por ip // no puiede ser por ip, porque si dos personas en la misma casa votan, no podran.
 
 -podria ser por correo
 

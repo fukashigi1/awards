@@ -5,3 +5,4 @@ export const voteRouter = Router()
 
 voteRouter.get('/:hash', voteController.view)
 voteRouter.get('/', voteController.obtainaward)
+voteRouter.post('/', voteController.sendResponses)

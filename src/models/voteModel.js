@@ -1,4 +1,5 @@
 import {connection} from '../server.js'
+import {obtainQuestionTypes} from '../utils/fnUtilsBE.js'
 
 export class voteModel {
     static view = async ({hash}) => {
@@ -36,9 +37,89 @@ export class voteModel {
                     status: 200,
                     content: questions
                 }
+            } else {
+                return {
+                    status: 400,
+                    content: [{msg: 'Award not found.'}]
+                }
             }
         } catch {
+            return {
+                status: 500,
+                content: [{msg: 'An internal server error courred while trying to obtain the award information.'}]
+            }
+        }
+    }
 
+    static sendResponses = async (responseInformation) => {
+        let {responses, email, id_award} = responseInformation
+        if (!validateEmail(email)) {
+            return {
+                status: 400,
+                content: [{msg: 'The email is not valid or not allowed to vote'}]
+            }
+        }
+
+        try {
+            const [checkPublicClosed] = await connection.query('SELECT public, closed FROM awards WHERE id = ?', [id_award])
+
+            if (checkPublicClosed.length == 0) {
+                return {
+                    status: 400,
+                    content: [{msg: 'This resource was not found.'}]
+                }
+            }
+
+            if (checkPublicClosed[0].public == 0) {
+                return {
+                    status: 403,
+                    content: [{msg: 'You are not authorized to vote on this award.'}]
+                }
+            }
+            if (checkPublicClosed[0].closed == 1) {
+                return {
+                    status: 410,
+                    content: [{msg: 'This award is now closed.'}]
+                }
+            }   
+            let questions = await obtainQuestionTypes()
+            const [obtainQuestions] = await connection.query('SELECT BIN_TO_UUID(id) as id, question_type, mandatory FROM questions WHERE id_award = ? ORDER BY order_id', [id_award])
+
+///
+////
+////
+// validar que existen la misma cantidad de respuestas a la misma cantidad de preguntas+}
+// mejor aun:
+// enviar mediante post solo las respuestas que hayan sido rellenadas, hacer el bucle for y solo validar las preguntas que tengan mandatory = 1.
+
+
+            let errors = []
+            for (let response of responses) {
+                for (let question of obtainQuestions){
+                    if (response.question_id == question.id) {
+                        if (question.mandatory == 1) {
+                            if (response.user_response == '' && response.user_response == undefined) {
+                               errors.push([question.id, "This question is mandatory."])
+                            }
+                        } 
+                    }
+
+                }
+            }
+
+            if (errors.length > 0) {
+                // hay errores
+            } else {
+                // no hay errores
+            }
+
+        } catch {
+
+        }
+        
+
+        function validateEmail(email) {
+            return true;
         }
     }
 }
