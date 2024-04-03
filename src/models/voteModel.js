@@ -1,3 +1,4 @@
+import { response } from 'express'
 import {connection} from '../server.js'
 import {obtainQuestionTypes} from '../utils/fnUtilsBE.js'
 
@@ -82,7 +83,7 @@ export class voteModel {
                     content: [{msg: 'This award is now closed.'}]
                 }
             }   
-            let questions = await obtainQuestionTypes()
+            let question_types = await obtainQuestionTypes()
             const [obtainQuestions] = await connection.query('SELECT BIN_TO_UUID(id) as id, question_type, mandatory FROM questions WHERE id_award = ? ORDER BY order_id', [id_award])
 
 ///
@@ -92,26 +93,57 @@ export class voteModel {
 // mejor aun:
 // enviar mediante post solo las respuestas que hayan sido rellenadas, hacer el bucle for y solo validar las preguntas que tengan mandatory = 1.
 
+            let publish = []
+            let responsesWithErrors = []
+            let questionIds = []
+            let responseIds = []
 
-            let errors = []
-            for (let response of responses) {
-                for (let question of obtainQuestions){
-                    if (response.question_id == question.id) {
-                        if (question.mandatory == 1) {
-                            if (response.user_response == '' && response.user_response == undefined) {
-                               errors.push([question.id, "This question is mandatory."])
+            for (let question of obtainQuestions) {
+                let finded = false;
+
+                for (let response of responses) {
+
+                    if (!responseIds.includes(response.question_id))
+                        responseIds.push(response.question_id)
+
+                    if (question.mandatory == 1) {
+                        if (!questionIds.includes(question.id))
+                            questionIds.push(question.id)
+
+                        if (question.id == response.question_id) {
+                            if (response.user_response === "" || response.user_response === undefined || response.user_response === null || response.question_type != question.question_type){
+                                responsesWithErrors.push([response, "Your response is not valid."])
+                            } else {
+                                if (!publish.includes(response))
+                                    publish.push(response)
                             }
-                        } 
+                            finded = true;
+                            break
+                        }
+                        finded = false;
+                    } else {
+                        if (question.id == response.question_id) {
+                            if (response.question_type != question.question_type){
+                                responsesWithErrors.push([question, "The question type provided, does not match with the question."])
+                            } else {
+                                publish.push(response)
+                            }
+                            finded = true;
+                        }
                     }
-
+                }
+                if (finded == false) {
+                    responsesWithErrors.push([question, "This question was mandatory."])
                 }
             }
+            console.log(responseIds)
+            console.log(questionIds)
+            console.log("publish", publish)
+            console.log("responsesWithErrors", responsesWithErrors) 
+            
+            // Funciona :)
 
-            if (errors.length > 0) {
-                // hay errores
-            } else {
-                // no hay errores
-            }
+
 
         } catch {
 
