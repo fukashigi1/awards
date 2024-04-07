@@ -85,14 +85,6 @@ export class voteModel {
             }   
             let question_types = await obtainQuestionTypes()
             const [obtainQuestions] = await connection.query('SELECT BIN_TO_UUID(id) as id, question_type, mandatory FROM questions WHERE id_award = ? ORDER BY order_id', [id_award])
-
-///
-////
-////
-// validar que existen la misma cantidad de respuestas a la misma cantidad de preguntas+}
-// mejor aun:
-// enviar mediante post solo las respuestas que hayan sido rellenadas, hacer el bucle for y solo validar las preguntas que tengan mandatory = 1.
-
             let publish = []
             let responsesWithErrors = []
             let questionIds = []
@@ -141,12 +133,42 @@ export class voteModel {
             console.log("publish", publish)
             console.log("responsesWithErrors", responsesWithErrors) 
             
+            if (responsesWithErrors.length == 0) {
+                for (let response of responses) {
+                    try {
+                        const [sendResponses] = await connection.query('INSERT INTO responses (email, question_type, user_response, question_id, id_award) VALUES(?, ?, ?, ?, ?)', [email, response.question_type, response.user_response, response.question_id, id_award])
+
+
+                        // TOY ACA
+                        // Se suben las respuestas, corroborar que las respuestas se suban, corroborar que las IDS sean las mismas que las question_id de questions
+                        // Agregar clave foranea a question_id a la id de questions
+                    } catch {
+                        console.log(response)
+                        return {
+                            status: 500,
+                            content: {msg: 'An error has ocurred while saving your responses.'}
+                        }
+                    }
+
+
+                }
+            } else {
+                return {
+                    status: 400,
+                    content: {responsesWithErrors, msg: 'Some responses are invalid.'}
+                }
+            }
+
             // Funciona :)
-
-
+            // Todas las verificacione se hacen y se detectan las fallas, enviar respuestas.
+            // se podria empezar con la interfaz, no es necesario crear AUN la interfaz de creación.
+            
 
         } catch {
-
+            return {
+                status: 500,
+                content: [{msg: 'An internal server error has ocurred.'}]
+            }
         }
         
 
