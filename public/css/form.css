@@ -5,13 +5,21 @@
     flex-direction: column;
 }
 
-input[type="text"], input[type="password"] {
+#registerForm {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    flex-direction: column;
+}
+
+input[type="text"], input[type="password"], input[type="email"] {
     font-size: 1rem;
     padding: 0.4rem;
     border-radius: 1rem;
     border: 2px solid var(--input-normal-border);
     background: transparent;
-    color: var(--normal-text)
+    color: var(--normal-text);
+    width: 100%;
 }
 
     input[type="text"]:focus {
@@ -31,6 +39,8 @@ input[type="text"], input[type="password"] {
     display: flex;
     flex-direction: column;
     align-items: center;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
 }
     .inputWrapper label{
         padding: 10px;

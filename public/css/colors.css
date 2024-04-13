@@ -5,6 +5,9 @@
     
     --red: #ef6b6b;
 
+    --primary-color: #493698;
+    --secondary-color: #f5ebff;
+
 
     --line-separator: #f5ebff86;
 
@@ -13,4 +16,6 @@
     --input-normal-border: #f5ebff5a;
     --input-active-border: #f5ebff;
     --input-error-border: #ef6b6b;
+
+    --modal-background: #00000073;
 }

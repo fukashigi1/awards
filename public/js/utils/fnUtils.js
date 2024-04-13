@@ -34,27 +34,16 @@ function executeModal(type, text = '', buttons){
             </div>
             <div class="modalButtonWrapper">`
     switch (buttons) {
-        case 'continue':
-            globalModal += `<button id="continueButton">Continue</button>`
+        case 'accept':
+            globalModal += `<button id="acceptButton" class="primaryButton" style="width: 5rem;">Ok</button>`
             break;
-        case 'continueCancel':
+        case 'acceptCancel':
             globalModal += `
-                        <button id="cancelButton">Cancel</button>
-                        <button id="continueButton">Continue</button>`
-            break;
-        case 'cancel':
-            globalModal += `<button id="cancelButton">Cancel</button>`
-            break;
-        case 'okError':
-            globalModal += `<button id="okErrorButton">OK</button>`
-            break;
-        case 'okSuccess':
-            globalModal += `<button id="okSuccessButton">OK</button>`
+                        <button id="acceptButton" class="primaryButton" style="width: 5rem;">Accept</button>
+                        <button id="cancelButton" class="secondaryButton" style="width: 5rem;">Cancel</button>`
             break;
         default:
-            globalModal += `
-                        <button id="cancelButton">Cancel</button>
-                        <button id="continueButton">Continue</button>`
+            globalModal += buttons
             break;
     }
                 
@@ -65,26 +54,23 @@ function executeModal(type, text = '', buttons){
     document.body.insertAdjacentHTML('afterbegin', globalModal)
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-    //ANIMACION
-    dynamicEvent('click', 'cancelButton', ()=>{
-        while (document.getElementsByClassName('modalBackground')[0]){
-            document.getElementsByClassName('modalBackground')[0].remove();
-        }
-    })
 
-    dynamicEvent('click', 'okErrorButton', ()=>{
-        while (document.getElementsByClassName('modalBackground')[0]){
-            document.getElementsByClassName('modalBackground')[0].remove();
-        }
-    })
-    
-    dynamicEvent('click', 'modalBackground', ()=>{
-        while (document.getElementsByClassName('modalBackground')[0]){
-            document.getElementsByClassName('modalBackground')[0].remove();
-        }
+
+
+document.addEventListener('DOMContentLoaded', () => {
+    dynamicEvent('click', 'cancelButton', ()=>{
+        closeModal()
     })
 })
+function closeModal() {
+    let background = document.getElementsByClassName('modalBackground')[0];
+    let modal = document.getElementsByClassName('globalModal')[0];
+    modal.classList.add('hide-modal');
+    background.classList.add('hide-modal-background');
+    setTimeout(()=> {
+        background.remove();
+    }, 200)
+}
 
 function dynamicEvent(type, element, fn) {
     document.querySelector("body").addEventListener(type, (e) => {

@@ -1,0 +1,114 @@
+/*MODAL*/
+.modalBackground {
+    background-color: var(--modal-background);
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    backdrop-filter: blur(1px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    animation: appearModalBackground 0.2s;
+    animation-fill-mode: both;
+}
+
+.globalModal {
+    background-color: var(--primary-color);
+    width: 19em;
+    height: 19em;
+    border-radius: 1em;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    position: absolute;
+    animation: appearModal 0.5s;
+    animation-delay: 0.2s;
+    animation-fill-mode: both;
+    animation-timing-function: ease; 
+}
+
+.modalBody {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 3em;
+}
+
+.modalBody i {
+    font-size: 8em;
+    margin-bottom: 24px;
+    color: var(--red);
+}
+
+.modalBody span {
+    max-width: 275px;
+    max-height: 42px;
+    overflow: hidden;
+    text-align: center;
+    text-overflow: ellipsis;
+    color: var(--normalText);
+}
+
+.modalButtonWrapper {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    justify-content: center;
+}
+
+/*ANIMATIONS*/
+
+.hide-modal-background {
+    animation: hideModalBackground 0.2s;
+    animation-fill-mode: both;
+}
+
+.hide-modal {
+    animation: hideModal 0.5s;
+    animation-fill-mode: both;
+    animation-timing-function: ease; 
+}
+
+
+
+@keyframes hideModalBackground {
+    from {
+        opacity: 1;
+    } 
+    to {
+        opacity: 0;
+    }
+}
+
+@keyframes appearModalBackground {
+    from {
+        opacity: 0;
+    } 
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes appearModal {
+    from {
+        opacity: 0;
+        top: 5rem;
+    }
+    to {
+        opacity:1 ;
+        top: 10rem;
+    }
+}
+@keyframes hideModal {
+    from {
+        opacity:1 ;
+        top: 10rem;
+    }
+    to {
+        opacity: 0;
+        top: 5rem;
+    }
+}

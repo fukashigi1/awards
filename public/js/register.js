@@ -7,7 +7,7 @@ function ready(fn) {
 }
 
 ready(()=>{
-    executeModal('error', "e", 'continueCancel')
+    executeModal('error', "e", 'acceptCancel')
     let registerForm = document.getElementById('registerForm')
     registerForm.addEventListener("submit", async (e) => {
         e.preventDefault()
@@ -110,11 +110,11 @@ ready(()=>{
                         }
                     });
                 } else {
-                    executeModal('success', data, 'okSuccess')
+                    executeModal('success', data, 'accept')
                 }
                 
             } catch (e) {
-                executeModal('error', e.message, 'okError')
+                executeModal('error', e.message, 'accept')
             }
         }
     })
