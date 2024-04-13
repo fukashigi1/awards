@@ -128,29 +128,35 @@ export class voteModel {
                     responsesWithErrors.push([question, "This question was mandatory."])
                 }
             }
-            console.log(responseIds)
-            console.log(questionIds)
-            console.log("publish", publish)
-            console.log("responsesWithErrors", responsesWithErrors) 
+            //console.log(responseIds)
+            //console.log(questionIds)
+            //console.log("publish", publish)
+            //console.log("responsesWithErrors", responsesWithErrors) 
             
             if (responsesWithErrors.length == 0) {
+                const [verifyDupedResponse] = await connection.query('SELECT 1 FROM responses WHERE email = ? AND id_award = ?', [email, id_award])
+                console.log(verifyDupedResponse)
+                if (verifyDupedResponse.length > 0) {
+                    return {
+                        status: 403,
+                        content: {msg: 'You have already participated in this award.'}
+                    }
+                }
                 for (let response of responses) {
                     try {
-                        const [sendResponses] = await connection.query('INSERT INTO responses (email, question_type, user_response, question_id, id_award) VALUES(?, ?, ?, ?, ?)', [email, response.question_type, response.user_response, response.question_id, id_award])
+                        const [sendResponses] = await connection.query('INSERT INTO responses (email, question_type, user_response, question_id, id_award) VALUES(?, ?, ?, UUID_TO_bIN(?), ?)', [email, response.question_type, response.user_response, response.question_id, id_award])
 
-
-                        // TOY ACA
-                        // Se suben las respuestas, corroborar que las respuestas se suban, corroborar que las IDS sean las mismas que las question_id de questions
-                        // Agregar clave foranea a question_id a la id de questions
                     } catch {
-                        console.log(response)
                         return {
                             status: 500,
                             content: {msg: 'An error has ocurred while saving your responses.'}
                         }
                     }
+                }
 
-
+                return {
+                    status: 204,
+                    content: {}
                 }
             } else {
                 return {

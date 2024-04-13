@@ -101,10 +101,11 @@ function validateEmail(email) {
 
 function setError(element, message, type = true) {
     element.nextElementSibling.textContent = message;
+    console.log(element)
     if (type) { // true for set the error and false to remove it
-        // add red border
+        element.classList.add('inputErrorBorder')
     } else {
-        // remove red border
+        element.classList.remove('inputErrorBorder')
     }
 }
 

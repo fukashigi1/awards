@@ -27,6 +27,6 @@ export class voteController {
         let {responses, email, id_award} = req.body
 
         const sendAllResponses = await voteModel.sendResponses({responses, email, id_award})
-        
+        res.status(sendAllResponses.status).json(sendAllResponses.content)
     }
 }

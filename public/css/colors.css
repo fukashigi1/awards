@@ -1,0 +1,16 @@
+:root {
+    --background-gradient: linear-gradient(0deg, rgba(14,0,25,1) 51%, rgba(0,0,0,1) 100%);
+    --normal-text: #f5ebff;
+    --negative-text: #0e0019;
+    
+    --red: #ef6b6b;
+
+
+    --line-separator: #f5ebff86;
+
+    --button-border: #f5ebff;
+
+    --input-normal-border: #f5ebff5a;
+    --input-active-border: #f5ebff;
+    --input-error-border: #ef6b6b;
+}

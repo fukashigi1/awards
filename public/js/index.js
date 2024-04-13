@@ -7,5 +7,14 @@ function ready(fn) {
 }
 
 ready(()=>{
-    console.log("hola")
+    let loginButton = document.getElementById('loginButton')
+    let signupButton = document.getElementById('signupButton')
+
+    loginButton.addEventListener('click', () => {
+        window.location.href = '/login'
+    })
+
+    signupButton.addEventListener('click', () => {
+        window.location.href = '/register'
+    })
 });
