@@ -1,4 +1,4 @@
-import {validateEmail} from '../utils/fnUtilsBE.js'
+import {validateEmail, validatePassword} from '../utils/fnUtilsBE.js'
 import {connection} from '../server.js'
 import bcrypt from 'bcrypt'
 
@@ -45,6 +45,8 @@ export class registerModel {
             }
             if (passwordInput === '') {
                 errors.push({msg: 'Password field cannot be empty.', element: 'passwordInput'})
+            } else if (!validatePassword(passwordInput)) {
+                errors.push({msg: 'Password field must have 8 characters.', element: 'passwordInput'})
             }
             if (passwordConfirmInput === '') {
                 errors.push({msg: 'Password confirm input cannot be empty.', element: 'passwordConfirmInput'})
@@ -69,5 +71,6 @@ export class registerModel {
                 return {status: 500, msg: 'An unexpected internal error has ocurred.'}
             }
         }
+
     }
 }

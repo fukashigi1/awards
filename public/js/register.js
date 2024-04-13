@@ -119,7 +119,7 @@ ready(()=>{
         }
     })
 
-    dynamicEvent('click', 'okSuccessButton', ()=>{
+    dynamicEvent('click', 'acceptButton', ()=>{
         window.location.href = '/login'
     })
 });

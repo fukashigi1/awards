@@ -9,5 +9,7 @@ validar que el mismo usuario no pueda votar multiples veces.
 -podria ser por correo
 
 
+el body en celular se puede scrollear, corregir.
 
 ver posibilidad de implementar inicio de sesion congoogle
+
