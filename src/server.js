@@ -64,6 +64,7 @@ app.use(express.json())
 
 app.use(express.static('public'));
 
+
 //IMPORT RUTAS
 import { registerRouter } from './routes/registerRouter.js'
 import { loginRouter } from './routes/loginRouter.js'

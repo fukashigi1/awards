@@ -12,4 +12,4 @@ validar que el mismo usuario no pueda votar multiples veces.
 el body en celular se puede scrollear, corregir.
 
 ver posibilidad de implementar inicio de sesion congoogle
-
+Agregar fechas de creacion de cuentas, fechas de creacion de awards y fechas de creacion de respuestas

@@ -17,7 +17,7 @@ export class voteController {
     }
 
     static async obtainaward (req, res) {
-        let {hash} = req.body
+        let {hash} = req.params
         const bringQuestions = await voteModel.obtainaward({hash})
 
         res.status(bringQuestions.status).json(bringQuestions.content)
