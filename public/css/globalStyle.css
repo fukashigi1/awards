@@ -78,6 +78,6 @@ body header img {
 .contentWrapper {
     margin: 1em;
     border-radius: 1em;
-    background-color: #182a39;
+    background: var(--card-background);
     padding: 1em;
 }
