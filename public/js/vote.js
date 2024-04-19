@@ -49,17 +49,17 @@ ready(async ()=>{
             $question += `
                     <div class="votationWrapper">`
                     switch (question.question_type) {
-                        case 1:
+                        case 1: // radio
                             break;
-                        case 2:
+                        case 2: // checkbox
                             break;
-                        case 3:
+                        case 3: // color
                             break;
-                        case 4:
+                        case 4: // date
                             break;
-                        case 5:
+                        case 5: // rate
                             break;
-                        case 6:
+                        case 6: // input
                             break;
                     }
             $question += `

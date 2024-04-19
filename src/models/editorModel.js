@@ -47,7 +47,7 @@ export class editorModel {
                 try {
                     const [selectAward] = await connection.query('SELECT id FROM awards WHERE owner = UUID_TO_BIN(?) AND id = ? AND award_name = ?', [owner_id[0].user_id, award_id, award_name])
                     if (selectAward.length > 0) {
-                        const [selectQuestions] = await connection.query('SELECT BIN_TO_UUID(id) as id, question, question_type, url, mandatory FROM questions WHERE id_award = ? ORDER BY order_id', [selectAward[0].id])
+                        const [selectQuestions] = await connection.query('SELECT BIN_TO_UUID(id) as id, question, question_type, url, mandatory, question_choices FROM questions WHERE id_award = ? ORDER BY order_id', [selectAward[0].id])
 
                         return {
                             status: 200,
@@ -98,7 +98,7 @@ export class editorModel {
                 const [selectAward] = await connection.query('SELECT id FROM awards WHERE owner = UUID_TO_BIN(?) AND id = ? AND award_name = ?', [owner_id[0].user_id, award_id, award_name])
                 if (selectAward.length > 0) {
                     
-                    const [selectQuestions] = await connection.query('SELECT BIN_TO_UUID(id) as id, question, question_type, url, mandatory FROM questions WHERE id_award = ? ORDER BY order_id' , [award_id])
+                    const [selectQuestions] = await connection.query('SELECT BIN_TO_UUID(id) as id, question, question_type, url, mandatory, question_choices FROM questions WHERE id_award = ? ORDER BY order_id' , [award_id])
 
                     if (deleted_questions.length > 0) { // Check if there are questions to be removed
                         for (let i in deleted_questions) {
@@ -157,7 +157,7 @@ export class editorModel {
                             for (let x in selectQuestions) {
                                 questionDbId = selectQuestions[x]
                                 if (questionInputId.id === questionDbId.id) {
-                                    await connection.query('UPDATE questions SET question = ?, question_type = ?, order_id = ?, url = ?, mandatory = ? WHERE id = UUID_TO_BIN(?)', [questionInputId.question, questionInputId.question_type, questionInputId.order_id, questionInputId.url, questionInputId.mandatory, questionInputId.id])
+                                    await connection.query('UPDATE questions SET question = ?, question_type = ?, order_id = ?, url = ?, mandatory = ?, question_choices = ? WHERE id = UUID_TO_BIN(?)', [questionInputId.question, questionInputId.question_type, questionInputId.order_id, questionInputId.url, questionInputId.mandatory, questionInputId.question_choices, questionInputId.id])
                                     changed = true
                                     break
                                 } 
@@ -165,7 +165,7 @@ export class editorModel {
 
                             if (!changed) {
                                 console.log ("ohola");
-                                await connection.query('INSERT INTO questions (id_award, question, question_type, order_id, url, mandatory) VALUES (?, ?, ?, ?, ?, ?)', [award_id, questionInputId.question, questionInputId.question_type, questionInputId.order_id, questionInputId.url, questionInputId.mandatory])
+                                await connection.query('INSERT INTO questions (id_award, question, question_type, order_id, url, mandatory, question_choices) VALUES (?, ?, ?, ?, ?, ?, ?)', [award_id, questionInputId.question, questionInputId.question_type, questionInputId.order_id, questionInputId.url, questionInputId.mandatory, questionInputId.question_choices])
                             }
                         }
 
@@ -174,7 +174,7 @@ export class editorModel {
 
                         for (let i in questions) {
                             question = questions[i]
-                            await connection.query('INSERT INTO questions (id_award, question, question_type, order_id, url, mandatory) VALUES (?, ?, ?, ?, ?)', [award_id, question.question, question.question_type, question.order_id, question.url, question.mandatory])
+                            await connection.query('INSERT INTO questions (id_award, question, question_type, order_id, url, mandatory, question_choices) VALUES (?, ?, ?, ?, ?, ?)', [award_id, question.question, question.question_type, question.order_id, question.url, question.mandatory, question.question_choices])
                         }
 
                     }

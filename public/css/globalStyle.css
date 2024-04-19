@@ -10,7 +10,7 @@ body {
     background: var(--background-gradient);
     color: var(--normal-text);
     font-family: 'gadugi';
-    font-size: 1rem;
+    font-size: 16px;
     width: 100%;
     height: 100vh;
 }

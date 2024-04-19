@@ -13,3 +13,8 @@ el body en celular se puede scrollear, corregir.
 
 ver posibilidad de implementar inicio de sesion congoogle
 Agregar fechas de creacion de cuentas, fechas de creacion de awards y fechas de creacion de respuestas
+
+
+PEDIR, ANTES DE VOTAR, QUE SE LOGEE CON UNA CUENTA DE AWARDS O DE GOOGLE O LO QE SEA
+
+hacer el scroll por pregunta y los videos en loop autoplay
