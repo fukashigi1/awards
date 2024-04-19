@@ -33,7 +33,7 @@ export class voteModel {
             }
 
             if (findHash.length > 0) {
-                const [questions] = await connection.query('SELECT BIN_TO_UUID(id) as id, id_award, question, question_type, url FROM questions WHERE id_award = ?', [findHash[0].id])
+                const [questions] = await connection.query('SELECT BIN_TO_UUID(id) as id, id_award, question, question_type, url, question_choices, description, mandatory FROM questions WHERE id_award = ?', [findHash[0].id])
                 return {
                     status: 200,
                     content: questions

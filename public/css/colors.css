@@ -2,13 +2,18 @@
     --background-gradient: linear-gradient(0deg, rgba(14,0,25,1) 51%, rgba(0,0,0,1) 100%);
     --normal-text: #f5ebff;
     --negative-text: #0e0019;
+    --description-text: #d3c1e5;
     
+    --radio-border-active: #d3c1e5;
+    --radio-border-inactive: #d3c1e523;
+
     --red: #ef6b6b;
 
     --primary-color: #493698;
     --secondary-color: #f5ebff;
 
     --card-background: #182a39;
+    --card-background-2: #12202b;
 
     --line-separator: #f5ebff86;
 

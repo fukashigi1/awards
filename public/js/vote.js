@@ -7,22 +7,22 @@ function ready(fn) {
 }
 
 ready(async ()=>{
-    let hash = window.location.href.split('/')[4]
-    const response = await fetch(`/vote/obtainaward/${hash}`, {
+
+    try {
+        let hash = window.location.href.split('/')[4]
+        const response = await fetch(`/vote/obtainaward/${hash}`, {
         method: 'GET',
         headers: {
             Accept: 'application/json',
             'Content-Type': 'application/json',
           },
-    })
-    if (response.status === 500) {
-        throw new Error('An unexpected internal error has ocurred.')
-    }
+        })
+        if (response.status === 500) {
+            throw new Error('An unexpected internal error has ocurred.')
+        }
     
-    const data = await response.json()
-    displayQuestions(data)
-    try {
-        
+        const data = await response.json()
+        displayQuestions(data)
 
     } catch (e) {
         console.error('An unexpected error has ocurred during fetch.')
@@ -30,6 +30,7 @@ ready(async ()=>{
 
     function displayQuestions(data) {
         for(let question of data) {
+            console.log(question)
             let $question = `
                 <div class="questionWrapper" data-uuid="${question.id}">
                     <div class="questionTitleWrapper">
@@ -48,8 +49,28 @@ ready(async ()=>{
                     }
             $question += `
                     <div class="votationWrapper">`
+                    let insertChoices
                     switch (question.question_type) {
                         case 1: // radio
+                            $question += `
+                                        <div class="questionDescription">
+                                            <span>${question.description}</span>
+                                        </div>`
+
+                            let choices = question.question_choices.split(';')
+
+                            insertChoices = `<div class="radioWrapper">`
+
+                            for (let choice of choices) {
+                                insertChoices += `  
+                                        <div class="radioButtonWrapper">
+                                            <input type="radio" id="${choice}" name="${question.id}"></input>
+                                            <label for="${choice}">${choice}</label>
+                                        </div>`
+                            }
+
+                            insertChoices += `</div>`
+
                             break;
                         case 2: // checkbox
                             break;
@@ -62,7 +83,11 @@ ready(async ()=>{
                         case 6: // input
                             break;
                     }
+                    $question += insertChoices
             $question += `
+                        <div class="questionFooter">
+                            <button class="primaryButton" Style="width: 120px">Next</button>
+                        </div>
                     </div>
                 </div>`
                 document.getElementById('questionsWrapper').innerHTML += $question
