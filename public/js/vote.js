@@ -44,7 +44,7 @@ ready(async ()=>{
                     } else if (validateUrl(question.url) == 'image') {
                         $question += `
                         <div class="questionUrlWrapper">
-                            <img src="${question.url}"</img>
+                            <img src="${question.url}" />
                         </div>`
                     }
             $question += `
@@ -94,25 +94,29 @@ ready(async ()=>{
         }
     }
 
-    function validateUrl(url){
-        let ytRegex = /^((?:https?:)?\/\/)?((?:www|m)\.)?((?:youtube(-nocookie)?\.com|youtu\.be))(\/(?:[\w\-]+\?v=|embed\/|live\/|v\/)?)([\w\-]+)(\S+)?$/
-        let imageRegex = /^(http(s)?:\/\/)?([\w-]+\.)+[\w-]+(\/[\w- ;,./?%&=]*)?\.(jpg|jpeg|png|gif|svg)$/
-
-        if (ytRegex.test(url)) {
-            return 'youtube';
-        } else if (imageRegex.test(url)) {
-            return 'image';
-        } else {
-            return null;
-        }
-    }
-
-    function getId(url) {
-        const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
-        const match = url.match(regExp);
-    
-        return (match && match[2].length === 11)
-          ? match[2]
-          : null;
-    }
+    dynamicEventClass('click', 'questionUrlWrapper', (e) => {
+        const wrapper = e.target.closest('.questionUrlWrapper');
+        console.log(wrapper);
+    });
 });
+function validateUrl(url){
+    let ytRegex = /^((?:https?:)?\/\/)?((?:www|m)\.)?((?:youtube(-nocookie)?\.com|youtu\.be))(\/(?:[\w\-]+\?v=|embed\/|live\/|v\/)?)([\w\-]+)(\S+)?$/
+    let imageRegex = /^(http(s)?:\/\/)?([\w-]+\.)+[\w-]+(\/[\w- ;,./?%&=]*)?\.(jpg|jpeg|png|gif|svg)$/
+
+    if (ytRegex.test(url)) {
+        return 'youtube';
+    } else if (imageRegex.test(url)) {
+        return 'image';
+    } else {
+        return null;
+    }
+}
+
+function getId(url) {
+    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+    const match = url.match(regExp);
+
+    return (match && match[2].length === 11)
+      ? match[2]
+      : null;
+}

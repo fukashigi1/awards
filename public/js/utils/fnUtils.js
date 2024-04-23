@@ -80,6 +80,11 @@ function dynamicEvent(type, element, fn) {
     })
 }
 
+function dynamicEventClass(type, className, fn) {
+    document.querySelector("body").addEventListener(type, (e) => {
+        fn(e);
+    });
+}
 function validateEmail(email) {
     const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return regexEmail.test(email);
