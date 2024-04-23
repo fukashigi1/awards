@@ -18,3 +18,6 @@ Agregar fechas de creacion de cuentas, fechas de creacion de awards y fechas de 
 PEDIR, ANTES DE VOTAR, QUE SE LOGEE CON UNA CUENTA DE AWARDS O DE GOOGLE O LO QE SEA
 
 hacer el scroll por pregunta y los videos en loop autoplay
+
+
+crear una nuevo question type para mostrar la categoria, deberia tener el question como el npombre de categoria y la url para un gif o algo. mandatory 0

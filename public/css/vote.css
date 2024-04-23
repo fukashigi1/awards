@@ -74,15 +74,17 @@
         background: var(--card-background-2);
         overflow: auto;
         height: 60%;
-        white-space: nowrap;
         display: flex;
-        align-items: center;
+        flex-direction: column;
+        align-content: flex-start;
+        flex-wrap: wrap;
     }
 
         .votationWrapper .radioWrapper .radioButtonWrapper {
             margin-left: 1em;
             display: flex;
             align-items: center;
+            margin-top: 1em;
         }
 
             .votationWrapper .radioWrapper .radioButtonWrapper input[type=radio] {
