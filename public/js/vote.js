@@ -27,7 +27,6 @@ ready(async ()=>{
     } catch (e) {
         console.error('An unexpected error has ocurred during fetch.')
     }
-
     function displayQuestions(data) {
         for(let question of data) {
             console.log(question)

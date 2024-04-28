@@ -1,10 +1,6 @@
 #questionsWrapper {
-    display: flex;
-    flex-direction: column;
-    flex-wrap: wrap;
-    align-content: center;
     padding: 1em;
-    gap: 2em;
+    width: calc(100% - 2em);
 }
 
 .questionWrapper {
@@ -17,7 +13,8 @@
     flex-wrap: wrap;
     justify-content: flex-start;
     align-content: flex-start;
-    height: 80vh;
+    margin-bottom: 2em;
+    height: calc(100vh - 73px - 2em);
 }
 
 .questionTitleWrapper {
@@ -48,6 +45,7 @@
         object-fit: contain;
         border-radius: 6px;
         pointer-events: none;
+        width: calc(100% - 2em);
     }
 
 .votationWrapper {
