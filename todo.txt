@@ -21,3 +21,6 @@ hacer el scroll por pregunta y los videos en loop autoplay
 
 
 crear una nuevo question type para mostrar la categoria, deberia tener el question como el npombre de categoria y la url para un gif o algo. mandatory 0
+
+
+HACER QUE LAS PREGUNTAS VENGAN DE LA DERECHA

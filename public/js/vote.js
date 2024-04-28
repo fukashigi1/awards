@@ -96,8 +96,24 @@ ready(async ()=>{
 
     dynamicEventClass('click', 'questionUrlWrapper', (e) => {
         const wrapper = e.target.closest('.questionUrlWrapper');
-        console.log(wrapper);
+        let imgSrc = wrapper.children[0].getAttribute('src')
+        if (imgSrc != undefined) {
+            let body = `
+                <div class="zoomedImageWrapper">
+                    <img src="${imgSrc}">
+                </div>
+            `
+            let buttons = `
+                <button class="primaryButton" id="closeButton">Close</button>
+            `
+
+            executeModal({type: 'other', buttons, body})
+        }
     });
+    dynamicEvent('click', 'closeButton', (e) => {
+        closeModal()
+    });
+
 });
 function validateUrl(url){
     let ytRegex = /^((?:https?:)?\/\/)?((?:www|m)\.)?((?:youtube(-nocookie)?\.com|youtu\.be))(\/(?:[\w\-]+\?v=|embed\/|live\/|v\/)?)([\w\-]+)(\S+)?$/

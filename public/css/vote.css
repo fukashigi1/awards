@@ -47,6 +47,7 @@
         height: 100%;
         object-fit: contain;
         border-radius: 6px;
+        pointer-events: none;
     }
 
 .votationWrapper {
@@ -117,4 +118,18 @@
     .questionFooter button {
         width: 145px;
         height: 50px;
+    }
+
+.zoomedImageWrapper {
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+    flex-wrap: wrap;
+    width: calc(100% - 2em);
+    border-radius: 1em;
+}
+
+    .zoomedImageWrapper img {
+        width: 100%;
     }

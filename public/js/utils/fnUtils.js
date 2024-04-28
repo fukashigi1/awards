@@ -1,6 +1,7 @@
 
-function executeModal(type, text = '', buttons){
+function executeModal({type, text = '', buttons, width = 'calc(100% - 2em)', height = '24em', body}){
     let icon = ''
+    
     switch (type) {
         case 'error':
             icon = '<i class="fa-solid fa-circle-xmark" style="color: #f36969;"></i>'
@@ -27,20 +28,27 @@ function executeModal(type, text = '', buttons){
     }
     let globalModal = `
     <div class="modalBackground" id="modalBackground">
-        <div class="globalModal">
-            <div class="modalBody">
+        <div class="globalModal" style="width: ${width} !important; height: ${height} !important">
+            <div class="modalBody">`
+            if (icon != '') {
+                globalModal += `
                 ${icon}
                 <span>${text}</span>
-            </div>
+                `
+            } else {
+                globalModal += body
+            }
+                
+            globalModal += `</div>
             <div class="modalButtonWrapper">`
     switch (buttons) {
         case 'accept':
-            globalModal += `<button id="acceptButton" class="primaryButton" style="width: 5rem;">Ok</button>`
+            globalModal += `<button id="acceptButton" class="primaryButton">Ok</button>`
             break;
         case 'acceptCancel':
             globalModal += `
-                        <button id="acceptButton" class="primaryButton" style="width: 5rem;">Accept</button>
-                        <button id="cancelButton" class="secondaryButton" style="width: 5rem;">Cancel</button>`
+                        <button id="acceptButton" class="primaryButton">Accept</button>
+                        <button id="cancelButton" class="secondaryButton">Cancel</button>`
             break;
         default:
             globalModal += buttons
@@ -75,14 +83,18 @@ function closeModal() {
 function dynamicEvent(type, element, fn) {
     document.querySelector("body").addEventListener(type, (e) => {
         if (e.target && e.target.id === element) {
-            fn()
+            fn(e)
         }
     })
 }
 
 function dynamicEventClass(type, className, fn) {
     document.querySelector("body").addEventListener(type, (e) => {
-        fn(e);
+        // Verifica si el elemento clickeado tiene la clase especificada
+        if (e.target.classList.contains(className)) {
+            // Ejecuta la función solo si el elemento clickeado tiene la clase
+            fn(e);
+        }
     });
 }
 function validateEmail(email) {
