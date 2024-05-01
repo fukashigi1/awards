@@ -19,6 +19,10 @@
 
     --button-border: #f5ebff;
 
+    --input-radio-background-active: #493698;
+    --input-radio-background: #354d61;
+    --input-radio-checkmark: #d3c1e5;
+
     --input-normal-border: #f5ebff5a;
     --input-active-border: #f5ebff;
     --input-error-border: #ef6b6b;

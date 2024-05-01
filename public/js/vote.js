@@ -7,7 +7,7 @@ function ready(fn) {
 }
 
 ready(async ()=>{
-
+    
     try {
         let hash = window.location.href.split('/')[4]
         const response = await fetch(`/vote/obtainaward/${hash}`, {
@@ -62,10 +62,10 @@ ready(async ()=>{
 
                             for (let choice of choices) {
                                 insertChoices += `  
-                                        <div class="radioButtonWrapper">
+                                        <label class="containerRadio">${choice}
                                             <input type="radio" id="${choice}" name="${question.id}"></input>
-                                            <label for="${choice}">${choice}</label>
-                                        </div>`
+                                            <span class="checkmark"></span>
+                                        </label>`
                             }
 
                             insertChoices += `</div>`

@@ -11,6 +11,7 @@ body {
     color: var(--normal-text);
     font-family: 'gadugi';
     font-size: 16px;
+    height: 100vh;
 }
 
 body header {
@@ -79,4 +80,10 @@ body header img {
     border-radius: 1em;
     background: var(--card-background);
     padding: 1em;
+}
+
+.bodyInsideWrapper {
+    width: 100%;
+    height: calc(100% - 73px);
+    overflow-y: auto;
 }
