@@ -29,7 +29,6 @@ ready(async ()=>{
     }
     function displayQuestions(data) {
         for(let question of data) {
-            console.log(question)
             let $question = `
                 <div class="questionWrapper" data-uuid="${question.id}">
                     <div class="questionTitleWrapper">
@@ -48,30 +47,60 @@ ready(async ()=>{
                     }
             $question += `
                     <div class="votationWrapper">`
-                    let insertChoices
+                    $question += `
+                    <div class="questionDescription">
+                        <span>${question.description}</span>
+                    </div>`
+                    let insertChoices, choices
+                    console.log(question)
+                    if (question.question_choices != null) {
+                        choices = question.question_choices.split(';')
+                    }
+                    
                     switch (question.question_type) {
                         case 1: // radio
-                            $question += `
-                                        <div class="questionDescription">
-                                            <span>${question.description}</span>
-                                        </div>`
-
-                            let choices = question.question_choices.split(';')
 
                             insertChoices = `<div class="radioWrapper">`
-
-                            for (let choice of choices) {
-                                insertChoices += `  
-                                        <label class="containerRadio">${choice}
-                                            <input type="radio" id="${choice}" name="${question.id}"></input>
-                                            <span class="checkmark"></span>
-                                        </label>`
+                            if (question.question_choices != null) {
+                                for (let choice of choices) {
+                                    insertChoices += `  
+                                            <label class="containerRadio">${choice}
+                                                <input type="radio" id="${choice}" name="${question.id}"></input>
+                                                <span class="checkmarkRadio"></span>
+                                            </label>`
+                                }
+                            } else {
+                                insertChoices += `
+                                <div class="errorEmptyChoices">
+                                    <span>Han error has ocurred and this question aparently have no choices.</span>
+                                </div>
+                                `
                             }
 
                             insertChoices += `</div>`
 
                             break;
                         case 2: // checkbox
+                            
+                            insertChoices = `<div class="radioWrapper">`
+                            if (question.question_choices != null) {
+                                for (let choice of choices) {
+                                    insertChoices += `  
+                                            <label class="containerCheckbox">${choice}
+                                                <input type="checkbox" id="${choice}" name="${question.id}"></input>
+                                                <span class="checkmarkCheckbox"></span>
+                                            </label>`
+                                }
+                            } else {
+                                insertChoices += `
+                                <div class="errorEmptyChoices">
+                                    <span>Han error has ocurred and this question aparently have no choices.</span>
+                                </div>
+                                `
+                            }
+                        
+                            insertChoices += `</div>`
+
                             break;
                         case 3: // color
                             break;
